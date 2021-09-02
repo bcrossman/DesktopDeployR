@@ -9,3 +9,4 @@ jsonlite
 
 # if deploying shiny based applications:
 shiny
+flexdashboard

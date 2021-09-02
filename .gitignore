@@ -4,3 +4,4 @@ library/
 log/
 app/shiny/.Rhistory
 app/.Rhistory
+.Rproj.user
