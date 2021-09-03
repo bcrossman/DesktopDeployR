@@ -7,7 +7,9 @@ runtime: shiny
 ```{r global, include=FALSE}
 library(flexdashboard)
 library(shiny)
+library(shinyWidgets)
 library(plyr)
+library(tidytext)
 library(tidyverse)
 library(testthat)
 library(DT)
@@ -33,9 +35,46 @@ player_data$team[is.na(player_data$team)] <-"FA"
 
 
 vec = c("QB",1, "RG",1, "LG", 1, "C", 1, "LT", 1, "RT", 1, "LE", 1, "RE", 1, "DT", 1, "LOLB", 1,
-        "ROLB", 1, "MLB", 1, "SS", 1, "FS", 1, "CB", 1, "WR", 1, "TE", 1, "HB", 1, "K", 1, "P", 1)
+        "ROLB", 1, "MLB", 1, "SS", 2, "FS", 1, "CB", 2, "WR", 3, "TE", 1, "HB", 1, "K", 1, "P", 1)
 
 required_depth <-  as_tibble(matrix(vec, ncol=2, byrow = T), .name_repair = "minimal") %>% set_names(nm = c("position", "num"))
+
+group_positions <- 
+  list(
+    data.frame(group_position = "OL", position = c("RG","LG","C", "LT", "RT")),
+    data.frame(group_position = "DL", position = c("LE", "RE", "DT")),
+    data.frame(group_position = "LB", position = c("LOLB", "ROLB", "MLB")),
+    data.frame(group_position = "DB", position = c("SS", "FS", "CB")),
+    data.frame(group_position = "WR", position = c("WR")),
+    data.frame(group_position = "TE", position = c("TE")),
+    data.frame(group_position = "QB", position = c("QB")),
+    data.frame(group_position = "RB", position = c("HB", "FB")),
+    data.frame(group_position = "K", position = c("K","P"))
+  )
+
+group_positions_df <- bind_rows(group_positions)
+
+##Quick test to make sure you've provided a map for all positions in data
+
+testthat::expect_true(all(unique(player_data$position) %in% group_positions_df$position))
+
+simple_positions <- 
+  list(
+    data.frame(simple_position = "Offense", group_position = c("OL", "WR", "TE", "RB", "QB") ),
+    data.frame(simple_position = "Defense", group_position = c("DL", "LB", "DB")),
+    data.frame(simple_position = "Special_Team", group_position = c("K"))
+  )
+
+simple_positions_df <- bind_rows(simple_positions)
+
+##Quick test to make sure you've provided a map for all positions in data 
+
+testthat::expect_true(all(unique(group_positions_df$group_position) %in% simple_positions_df$group_position))
+
+player_data <- 
+  player_data %>% 
+  left_join(group_positions_df, by = "position") %>% 
+  left_join(simple_positions_df, by = "group_position")
 
 ```
 
@@ -395,28 +434,28 @@ DT::renderDataTable({
   P_chose_attr <-     input$attributes_target_2_P
   K_chose_attr <-     input$attributes_target_2_K
   
-# 
-#   WR_chose_attr <- c("playerBestOvr","speedRating","routeRunShortRating","runBlockFinesseRating","runBlockPowerRating" )
-#   QB_chose_attr <- c("playerBestOvr","speedRating")
-#   HB_chose_attr <- c("playerBestOvr")
-#   FB_chose_attr <- c("playerBestOvr", "elusiveRating", "jukeMoveRating")
-#   CB_chose_attr <- c("playerBestOvr","speedRating")
-#   RE_chose_attr <- c("playerBestOvr","speedRating")
-#   RG_chose_attr <- c("playerBestOvr","speedRating")
-#   RT_chose_attr <- c("playerBestOvr","speedRating")
-#   LE_chose_attr <- c("playerBestOvr","speedRating")
-#   LG_chose_attr <- c("playerBestOvr","speedRating")
-#   LT_chose_attr <- c("playerBestOvr","speedRating")
-#   DT_chose_attr <- c("playerBestOvr","speedRating")
-#   LOLB_chose_attr <- c("playerBestOvr","speedRating")
-#   ROLB_chose_attr <- c("playerBestOvr","speedRating")
-#   SS_chose_attr <- c("playerBestOvr","speedRating")
-#   FS_chose_attr <- c("playerBestOvr","speedRating")
-#   TE_chose_attr <- c("playerBestOvr","speedRating")
-#   MLB_chose_attr <- c("playerBestOvr","speedRating")
-#   C_chose_attr <- c("playerBestOvr","speedRating")
-#   P_chose_attr <- c("playerBestOvr","speedRating")
-#   K_chose_attr <- c("playerBestOvr","speedRating")
+  # 
+  #   WR_chose_attr <- c("playerBestOvr","speedRating","routeRunShortRating","runBlockFinesseRating","runBlockPowerRating" )
+  #   QB_chose_attr <- c("playerBestOvr","speedRating")
+  #   HB_chose_attr <- c("playerBestOvr")
+  #   FB_chose_attr <- c("playerBestOvr", "elusiveRating", "jukeMoveRating")
+  #   CB_chose_attr <- c("playerBestOvr","speedRating")
+  #   RE_chose_attr <- c("playerBestOvr","speedRating")
+  #   RG_chose_attr <- c("playerBestOvr","speedRating")
+  #   RT_chose_attr <- c("playerBestOvr","speedRating")
+  #   LE_chose_attr <- c("playerBestOvr","speedRating")
+  #   LG_chose_attr <- c("playerBestOvr","speedRating")
+  #   LT_chose_attr <- c("playerBestOvr","speedRating")
+  #   DT_chose_attr <- c("playerBestOvr","speedRating")
+  #   LOLB_chose_attr <- c("playerBestOvr","speedRating")
+  #   ROLB_chose_attr <- c("playerBestOvr","speedRating")
+  #   SS_chose_attr <- c("playerBestOvr","speedRating")
+  #   FS_chose_attr <- c("playerBestOvr","speedRating")
+  #   TE_chose_attr <- c("playerBestOvr","speedRating")
+  #   MLB_chose_attr <- c("playerBestOvr","speedRating")
+  #   C_chose_attr <- c("playerBestOvr","speedRating")
+  #   P_chose_attr <- c("playerBestOvr","speedRating")
+  #   K_chose_attr <- c("playerBestOvr","speedRating")
   
   attr_obj <- lst(
     WR_chose_attr ,  
@@ -846,6 +885,121 @@ DT::renderDataTable({
 
 ```
 
+Team Overview
+=====================================  
+
+Sidebar {.sidebar}
+-------------------------------------
+
+```{r}
+pickerInput(inputId = "team_picks",
+            label = "What team do you want to review:",
+            choices = unique(player_data$team),
+            selected = c("Panthers", "Seahawks", "Patriots", "Bills", "Browns", "Ravens", "Saints", "Football Team"),
+            multiple = TRUE,
+            options = list(`actions-box` = TRUE)
+)
+
+
+
+player_data_cut <-
+  player_data %>% 
+  left_join(required_depth) %>% 
+  arrange(desc(playerBestOvr)) %>% 
+  group_by(team, position) %>% 
+  mutate(rank = rank(-playerBestOvr, ties.method = "first")) %>% 
+  filter(rank <= num)
+
+```
+
+Draft Tables  {.tabset .tabset-fade}
+-------------------------------------
+
+### Positions
+
+```{r}
+
+
+renderPlot({
+  
+  team_picks <- input$team_picks
+  # team_picks <- c("Panthers", "Seahawks", "Patriots", "Bills", "Browns", "Ravens", "Saints", "Football Team", "Dolphins")
+  
+  # player_data_cut %>% 
+  #   filter(team %in% team_picks) %>% 
+  #   # group_by(team, group_position) %>%
+  #   # summarise(rating = mean(playerBestOvr)) %>% 
+  #   ggplot(aes(team, playerBestOvr, color = team)) +
+  #   geom_boxplot(position='dodge') +
+  #   coord_flip()+
+  #   # scale_y_continuous(limits=c(60,90),oob = rescale_none)
+  #   facet_wrap(~group_position, scales = "free_y", nrow = 1) +
+  #   labs(y = "Average Rating of Starters by Position")
+  
+  player_data_cut %>% 
+    filter(team %in% team_picks) %>% 
+    mutate(team = as_factor(team)) %>% 
+    mutate(group_position = as_factor(group_position)) %>% 
+    group_by(team, group_position, .drop = F) %>%
+    summarise(rating = mean(playerBestOvr),
+              max_rating = max(playerBestOvr),
+              min_rating = min(playerBestOvr)) %>%
+    # mutate(team = reorder_within(team, rating, group_position)) %>% 
+    group_by(group_position) %>% 
+    mutate(team = fct_reorder(team, filter(., group_position == "QB") %>% pull(rating))) %>% 
+    ungroup() %>% 
+    mutate(group_position = fct_relevel(group_position,c("QB","WR","RB","OL","TE","DB","LB","DL","K"))) %>% 
+    ggplot(aes(team, rating, ymin=min_rating, ymax=max_rating, 
+               group = team,
+               color = team)) +
+    geom_pointrange()+
+    facet_wrap(~group_position, scales = "fixed", nrow = 1) +
+    coord_flip()+
+    # scale_x_reordered() +
+    # scale_y_continuous(limits=c(60,90),oob = rescale_none)
+    labs(y = "Average Rating of Starters by Position") +
+    theme(legend.position = "none")
+  
+  
+})
+
+
+```
+
+### 3 Phases
+
+```{r}
+
+
+renderPlot({
+  
+  team_picks <- input$team_picks
+  # team_picks <- c("Panthers", "Seahawks", "Patriots", "Bills", "Browns", "Ravens", "Saints", "Football Team")
+  
+  player_data_cut %>% 
+    filter(team %in% team_picks) %>% 
+    mutate(team = as_factor(team)) %>% 
+    mutate(simple_position = as_factor(simple_position)) %>% 
+    group_by(team, simple_position, .drop=F) %>%
+    summarise(rating = mean(playerBestOvr),
+              max_rating = max(playerBestOvr),
+              min_rating = min(playerBestOvr)) %>%
+    group_by(simple_position) %>% 
+    mutate(team = fct_reorder(team, filter(., simple_position == "Offense") %>% pull(rating))) %>% 
+    ungroup() %>% 
+    mutate(simple_position = fct_relevel(simple_position,c("Offense","Defense","Special_Team"))) %>% 
+    ggplot(aes(team, rating, ymin=min_rating, ymax=max_rating, 
+               group = team,
+               color = team)) +
+    geom_pointrange()+
+    coord_flip()+
+    # scale_y_continuous(limits=c(60,90),oob = rescale_none)
+    facet_wrap(~simple_position, scales = "fixed", nrow = 1) +
+    labs(y = "Average Rating of Starters by Position")+
+    theme(legend.position = "none")
+  
+})
+```
 
 Raw Data
 =====================================     
