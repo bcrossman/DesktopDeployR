@@ -901,6 +901,12 @@ pickerInput(inputId = "team_picks",
             options = list(`actions-box` = TRUE)
 )
 
+selectInput(inputId = "attributes_target_team_overview",
+            label = "What Stat do you want to review:",
+            choices = names(player_data %>% select(-teamId,-firstName, -team,  -lastName,-position)),
+            selected = "playerBestOvr",
+            multiple = FALSE
+)
 
 
 player_data_cut <-
@@ -923,8 +929,11 @@ Overview Tables  {.tabset .tabset-fade}
 
 renderPlot({
   
+  
   team_picks <- input$team_picks
   # team_picks <- c("Panthers", "Seahawks", "Patriots", "Bills", "Browns", "Ravens", "Saints", "Football Team", "Dolphins")
+  characteristic <- input$attributes_target_team_overview
+  # characteristic <- "playerBestOvr"
   
   # player_data_cut %>% 
   #   filter(team %in% team_picks) %>% 
@@ -942,9 +951,9 @@ renderPlot({
     mutate(team = as_factor(team)) %>% 
     mutate(group_position = as_factor(group_position)) %>% 
     group_by(team, group_position, .drop = F) %>%
-    summarise(rating = mean(playerBestOvr),
-              max_rating = max(playerBestOvr),
-              min_rating = min(playerBestOvr)) %>%
+    summarise(rating = mean(!!sym(characteristic)),
+              max_rating = max(!!sym(characteristic)),
+              min_rating = min(!!sym(characteristic))) %>%
     # mutate(team = reorder_within(team, rating, group_position)) %>% 
     group_by(group_position) %>% 
     mutate(team = fct_reorder(team, filter(., group_position == "QB") %>% pull(rating))) %>% 
@@ -954,11 +963,11 @@ renderPlot({
                group = team,
                color = team)) +
     geom_pointrange()+
-    facet_wrap(~group_position, scales = "fixed", nrow = 1) +
+    facet_wrap(~group_position, scales = "free_x", nrow = 1) +
     coord_flip()+
     # scale_x_reordered() +
     # scale_y_continuous(limits=c(60,90),oob = rescale_none)
-    labs(y = "Average Rating of Starters by Position") +
+    labs(y = paste("Average",characteristic,"Rating of Starters by Position")) +
     theme(legend.position = "none")
   
   
@@ -1841,32 +1850,4 @@ DT::renderDataTable({
 
 
 ```
-
-Team Overview
-=====================================  
-
-Sidebar {.sidebar}
--------------------------------------
-
-```{r}
-pickerInput(inputId = "team_picks",
-            label = "What team do you want to review:",
-            choices = unique(player_data$team),
-            selected = c("Panthers", "Seahawks", "Patriots", "Bills", "Browns", "Ravens", "Saints", "Football Team"),
-            multiple = TRUE,
-            options = list(`actions-box` = TRUE)
-)
-
-
-
-player_data_cut <-
-  player_data %>% 
-  left_join(required_depth) %>% 
-  arrange(desc(playerBestOvr)) %>% 
-  group_by(team, position) %>% 
-  mutate(rank = rank(-playerBestOvr, ties.method = "first")) %>% 
-  filter(rank <= num)
-
-```
-
 
