@@ -87,6 +87,7 @@ Sidebar {.sidebar}
 
 ```{r}
 
+actionButton("goButton", "Go!")
 
 selectInput(inputId = "attributes_target_2_QB",
             label = "QB Desired Attributes:",
@@ -412,28 +413,29 @@ Draft Tables  {.tabset .tabset-fade}
 
 
 DT::renderDataTable({
+  input$goButton
   
-  WR_chose_attr <-    input$attributes_target_2_WR
-  QB_chose_attr <-    input$attributes_target_2_QB
-  C_chose_attr <-     input$attributes_target_2_C
-  HB_chose_attr <-    input$attributes_target_2_HB
-  FB_chose_attr <-    input$attributes_target_2_FB
-  CB_chose_attr <-    input$attributes_target_2_CB
-  RE_chose_attr <-    input$attributes_target_2_RE
-  RG_chose_attr <-    input$attributes_target_2_RG
-  RT_chose_attr <-    input$attributes_target_2_RT
-  LE_chose_attr <-    input$attributes_target_2_LE
-  LG_chose_attr <-    input$attributes_target_2_LG
-  LT_chose_attr <-    input$attributes_target_2_LT
-  DT_chose_attr <-    input$attributes_target_2_DT
-  LOLB_chose_attr <-  input$attributes_target_2_LOLB
-  ROLB_chose_attr <-  input$attributes_target_2_ROLB
-  SS_chose_attr <-    input$attributes_target_2_SS
-  FS_chose_attr <-    input$attributes_target_2_FS
-  TE_chose_attr <-    input$attributes_target_2_TE
-  MLB_chose_attr <-   input$attributes_target_2_MLB
-  P_chose_attr <-     input$attributes_target_2_P
-  K_chose_attr <-     input$attributes_target_2_K
+  WR_chose_attr <-    isolate(input$attributes_target_2_WR)
+  QB_chose_attr <-    isolate(input$attributes_target_2_QB)
+  C_chose_attr <-     isolate(input$attributes_target_2_C)
+  HB_chose_attr <-    isolate(input$attributes_target_2_HB)
+  FB_chose_attr <-    isolate(input$attributes_target_2_FB)
+  CB_chose_attr <-    isolate(input$attributes_target_2_CB)
+  RE_chose_attr <-    isolate(input$attributes_target_2_RE)
+  RG_chose_attr <-    isolate(input$attributes_target_2_RG)
+  RT_chose_attr <-    isolate(input$attributes_target_2_RT)
+  LE_chose_attr <-    isolate(input$attributes_target_2_LE)
+  LG_chose_attr <-    isolate(input$attributes_target_2_LG)
+  LT_chose_attr <-    isolate(input$attributes_target_2_LT)
+  DT_chose_attr <-    isolate(input$attributes_target_2_DT)
+  LOLB_chose_attr <-  isolate(input$attributes_target_2_LOLB)
+  ROLB_chose_attr <-  isolate(input$attributes_target_2_ROLB)
+  SS_chose_attr <-    isolate(input$attributes_target_2_SS)
+  FS_chose_attr <-    isolate(input$attributes_target_2_FS)
+  TE_chose_attr <-    isolate(input$attributes_target_2_TE)
+  MLB_chose_attr <-   isolate(input$attributes_target_2_MLB)
+  P_chose_attr <-     isolate(input$attributes_target_2_P)
+  K_chose_attr <-     isolate(input$attributes_target_2_K)
   
   # 
   #   WR_chose_attr <- c("playerBestOvr","speedRating","routeRunShortRating","runBlockFinesseRating","runBlockPowerRating" )
@@ -565,27 +567,29 @@ DT::renderDataTable({
 
 DT::renderDataTable({
   
-  WR_chose_attr <-    input$attributes_target_2_WR
-  QB_chose_attr <-    input$attributes_target_2_QB
-  C_chose_attr <-     input$attributes_target_2_C
-  HB_chose_attr <-    input$attributes_target_2_HB
-  FB_chose_attr <-    input$attributes_target_2_FB
-  CB_chose_attr <-    input$attributes_target_2_CB
-  RE_chose_attr <-    input$attributes_target_2_RE
-  RG_chose_attr <-    input$attributes_target_2_RG
-  RT_chose_attr <-    input$attributes_target_2_RT
-  LE_chose_attr <-    input$attributes_target_2_LE
-  LG_chose_attr <-    input$attributes_target_2_LG
-  LT_chose_attr <-    input$attributes_target_2_LT
-  DT_chose_attr <-    input$attributes_target_2_DT
-  LOLB_chose_attr <-  input$attributes_target_2_LOLB
-  ROLB_chose_attr <-  input$attributes_target_2_ROLB
-  SS_chose_attr <-    input$attributes_target_2_SS
-  FS_chose_attr <-    input$attributes_target_2_FS
-  TE_chose_attr <-    input$attributes_target_2_TE
-  MLB_chose_attr <-   input$attributes_target_2_MLB
-  P_chose_attr <-     input$attributes_target_2_P
-  K_chose_attr <-     input$attributes_target_2_K
+  input$goButton
+  
+  WR_chose_attr <-    isolate(input$attributes_target_2_WR)
+  QB_chose_attr <-    isolate(input$attributes_target_2_QB)
+  C_chose_attr <-     isolate(input$attributes_target_2_C)
+  HB_chose_attr <-    isolate(input$attributes_target_2_HB)
+  FB_chose_attr <-    isolate(input$attributes_target_2_FB)
+  CB_chose_attr <-    isolate(input$attributes_target_2_CB)
+  RE_chose_attr <-    isolate(input$attributes_target_2_RE)
+  RG_chose_attr <-    isolate(input$attributes_target_2_RG)
+  RT_chose_attr <-    isolate(input$attributes_target_2_RT)
+  LE_chose_attr <-    isolate(input$attributes_target_2_LE)
+  LG_chose_attr <-    isolate(input$attributes_target_2_LG)
+  LT_chose_attr <-    isolate(input$attributes_target_2_LT)
+  DT_chose_attr <-    isolate(input$attributes_target_2_DT)
+  LOLB_chose_attr <-  isolate(input$attributes_target_2_LOLB)
+  ROLB_chose_attr <-  isolate(input$attributes_target_2_ROLB)
+  SS_chose_attr <-    isolate(input$attributes_target_2_SS)
+  FS_chose_attr <-    isolate(input$attributes_target_2_FS)
+  TE_chose_attr <-    isolate(input$attributes_target_2_TE)
+  MLB_chose_attr <-   isolate(input$attributes_target_2_MLB)
+  P_chose_attr <-     isolate(input$attributes_target_2_P)
+  K_chose_attr <-     isolate(input$attributes_target_2_K)
   
   
   # WR_chose_attr <- c("playerBestOvr","speedRating","routeRunShortRating","runBlockFinesseRating","runBlockPowerRating" )
